@@ -1,42 +1,88 @@
-# TrustyListener Android
+# 🎙️ TrustyListener Android
 
-A native Android application built with Kotlin and Jetpack Compose for real-time audio event detection using Google's YAMNet model.
+A high-performance, native Android application designed for **real-time audio event detection**. Leveraging Google's **YAMNet** model and a robust background architecture, TrustyListener turns any Android device into a powerful sound monitoring station.
 
-## 🚀 Features
+---
 
-- **Real-time Audio Classification**: Detects 521 different sounds using the YAMNet model.
-- **Continuous Listening**: Runs as a Foreground Service for background monitoring.
-- **Embedded Web UI**: Monitor events and logs from any browser via a built-in Ktor server.
-- **Local Storage**: All detected events are saved locally using Room Database.
-- **Modern UI**: Built entirely with Jetpack Compose and Material 3.
+## 🚀 Key Features
 
-## 🛠️ Setup
+- **Real-time Audio Classification**: Detects **521 different sound classes** (speech, music, alarms, barking, etc.) with high precision.
+- **Robust Background Monitoring**: Implemented as a persistent **Foreground Service** with WakeLock support, ensuring continuous operation even when the device is locked or the app is minimized.
+- **Advanced ML Pipeline**: Multi-window ensemble classification with temporal smoothing and confidence-weighted fusion.
+- **Embedded Web Dashboard**: A built-in **Ktor web server** provides a real-time monitoring interface accessible from any browser on the same network.
+- **Offline First**: Local data persistence using **Room Database**; no cloud required.
+- **Modern Android Stack**: Built with **Kotlin Coroutines**, **Jetpack Compose**, **Hilt DI**, and **Material 3**.
 
-1. **Clone the repository**:
+---
 
-   ```bash
-   git clone https://github.com/yourusername/TrustyListener-Android.git
-   ```
+## 🏗️ Technical Architecture
 
-2. **Download YAMNet Models**:
-   Place the following files in `app/src/main/assets/`:
-   - [yamnet.tflite](https://storage.googleapis.com/tfhub-lite-models/google/lite-model/yamnet/classification/tflite/1.tflite)
-   - [yamnet_class_map.csv](https://github.com/tensorflow/models/blob/master/research/audioset/yamnet/yamnet_class_map.csv)
+TrustyListener follows **Clean Architecture** principles and **MVI/MVVM** patterns to ensure scalability and maintainability.
 
-3. **Build and Run**:
-   Open the project in Android Studio (Hedgehog or newer) or use the terminal:
-   ```bash
-   ./gradlew installDebug
-   ```
+### Audio Pipeline & ML (The "Brain")
 
-## 📜 License
+The core classification logic resides in `YAMNetClassifier.kt`, featuring:
 
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+- **Multi-Window Ensemble**: The app runs inference on multiple overlapping windows (e.g., 3 windows with 3900-sample offsets) to increase detection stability.
+- **Temporal Smoothing**: Uses **Exponential Moving Average (EMA)** to filter out transient noise and provide stable class predictions.
+- **Quality Metrics**: Each detection is rated based on **Entropy** and **Margin Score** to filter out low-confidence "background noise".
+- **Dynamic Modes**:
+  - `BALANCED`: Standard monitoring with 3-window ensemble.
+  - `SENSITIVE`: Optimized for low-latency detection of specific sounds (2 windows).
+  - `RAW`: Minimal processing for debugging (single window, no EMA).
 
-## 🔧 Technical Stack
+### Background Service
 
-- **Kotlin** & **Jetpack Compose**
-- **TensorFlow Lite** (Inference)
-- **Ktor** (Local Web Server)
-- **Hilt** (Dependency Injection)
-- **Room** (Local Persistence)
+The `ListeningService.kt` manages the lifecycle of audio capture and processing:
+
+- **Foreground Service**: Notifies the OS that the app is performing critical background work.
+- **Battery Optimization**: Uses a `WakeLock` to prevent the CPU from sleeping during active monitoring, while maintaining efficient power consumption via TFLite GPU delegates.
+
+### Embedded Web Server
+
+The built-in **Ktor server** (`WebServer.kt`) runs on port **8080** and features:
+
+- **RESTful API**: `/api/logs` provides the last 100 detected events in JSON format.
+- **Real-time HTML UI**: A responsive, self-hosted dashboard with automatic polling for live updates.
+
+---
+
+## 🛠️ Stack & Libraries
+
+- **UI**: Jetpack Compose, Material 3, Navigation Compose.
+- **DI**: Hilt (Dagger) for dependency injection.
+- **Persistence**: Room for reliable local SQLite storage.
+- **Concurrency**: Kotlin Coroutines & Flow for reactive data streams.
+- **ML**: TensorFlow Lite with Support Library.
+- **Networking**: Ktor (Netty) for the embedded server.
+
+---
+
+## 🚦 Getting Started
+
+### 1. Requirements
+
+- **Android Studio Hedgehog** (2023.1.1+)
+- **JDK 17**
+- **Android SDK 34**
+
+### 2. Manual Assets Required
+
+Due to licensing and size, you must manually place the following files in `app/src/main/assets/`:
+
+- `yamnet.tflite`: The official [YAMNet TFLite model](https://storage.googleapis.com/tfhub-lite-models/google/lite-model/yamnet/classification/tflite/1.tflite).
+- `yamnet_class_map.csv`: The [class mapping file](https://github.com/tensorflow/models/blob/master/research/audioset/yamnet/yamnet_class_map.csv).
+
+### 3. Build & Install
+
+```bash
+./gradlew installDebug
+```
+
+---
+
+## 📜 License & Acknowledgments
+
+- Licensed under **MIT License**.
+- Powered by Google's **YAMNet** Audio Research.
+- This project is a native Android port/expansion of the desktop sound classification concepts.
