@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">TrustyListener</string>
+    <string name="channel_name">TrustyListener Service</string>
+    <string name="channel_description">Servizio di ascolto audio in background</string>
+    <string name="notification_title">TrustyListener attivo</string>
+    <string name="notification_text">Rilevamento eventi audio in corso</string>
+</resources>
