@@ -1,0 +1,52 @@
+# Android/Gradle/IntelliJ Patterns
+.gradle/
+build/
+capture/
+local.properties
+.idea/
+*.iml
+*.iws
+.vscode/
+
+# Build Outputs
+*.apk
+*.aar
+*.jar
+*.bundle
+
+# Logs and temporary files
+*.log
+/captures/
+.externalNativeBuild/
+.cxx/
+*.property
+.DS_Store
+
+# Python Patterns
+venv/
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+instance/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Database files
+events.db
+*.db
+*.db-journal
+*.sqlite
+
+# Gradle patterns (if any nested)
+**/build/
+**/.gradle/
+
+# Secrets and miscellaneous
+google-services.json
+*.keystore
+!debug.keystore
