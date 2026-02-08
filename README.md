@@ -1,117 +1,42 @@
 # TrustyListener Android
 
-App Android nativa in Kotlin per rilevamento eventi audio con YAMNet.
+A native Android application built with Kotlin and Jetpack Compose for real-time audio event detection using Google's YAMNet model.
 
-## Requisiti
+## 🚀 Features
 
-- Android Studio Hedgehog (2023.1.1) o superiore
-- Android SDK 34
-- JDK 17
-- Dispositivo con Android 8.0+ (API 26)
-- Consigliato: 6GB+ RAM per TensorFlow Lite
+- **Real-time Audio Classification**: Detects 521 different sounds using the YAMNet model.
+- **Continuous Listening**: Runs as a Foreground Service for background monitoring.
+- **Embedded Web UI**: Monitor events and logs from any browser via a built-in Ktor server.
+- **Local Storage**: All detected events are saved locally using Room Database.
+- **Modern UI**: Built entirely with Jetpack Compose and Material 3.
 
-## Struttura del Progetto
+## 🛠️ Setup
 
-```
-TrustyListenerAndroid/
-├── app/
-│   ├── src/main/java/com/trustylistener/
-│   │   ├── data/
-│   │   │   ├── local/
-│   │   │   │   ├── audio/        # AudioRecorder
-│   │   │   │   └── database/     # Room entities/dao
-│   │   │   ├── ml/               # YAMNet TFLite
-│   │   │   └── repository/       # Repository implementations
-│   │   ├── domain/
-│   │   │   ├── model/            # Domain models
-│   │   │   ├── repository/       # Repository interfaces
-│   │   │   └── usecase/          # Use cases
-│   │   ├── presentation/
-│   │   │   ├── components/       # Compose components
-│   │   │   ├── screens/          # Compose screens
-│   │   │   └── viewmodel/        # ViewModels
-│   │   ├── service/              # ForegroundService
-│   │   ├── web/                  # Ktor web server
-│   │   ├── di/                   # Hilt modules
-│   │   └── MainActivity.kt
-│   └── src/main/assets/
-│       ├── yamnet.tflite         # Modello ML (da scaricare)
-│       └── yamnet_class_map.csv  # Class names
-```
-
-## Setup
-
-1. **Scarica i modelli YAMNet:**
+1. **Clone the repository**:
 
    ```bash
-   mkdir -p app/src/main/assets
-   curl -L https://storage.googleapis.com/download.tensorflow.org/models/tflite/yamnet/yamnet.tflite \
-     -o app/src/main/assets/yamnet.tflite
-   curl -L https://storage.googleapis.com/download.tensorflow.org/models/tflite/yamnet/yamnet_class_map.csv \
-     -o app/src/main/assets/yamnet_class_map.csv
+   git clone https://github.com/yourusername/TrustyListener-Android.git
    ```
 
-2. **Build del progetto:**
+2. **Download YAMNet Models**:
+   Place the following files in `app/src/main/assets/`:
+   - [yamnet.tflite](https://storage.googleapis.com/tfhub-lite-models/google/lite-model/yamnet/classification/tflite/1.tflite)
+   - [yamnet_class_map.csv](https://github.com/tensorflow/models/blob/master/research/audioset/yamnet/yamnet_class_map.csv)
 
-   ```bash
-   ./gradlew assembleDebug
-   ```
-
-3. **Installa su dispositivo:**
+3. **Build and Run**:
+   Open the project in Android Studio (Hedgehog or newer) or use the terminal:
    ```bash
    ./gradlew installDebug
    ```
 
-## Funzionalità
+## 📜 License
 
-- **Rilevamento Audio**: Cattura continua con AudioRecord API
-- **Classificazione YAMNet**: 521 classi audio tramite TensorFlow Lite
-- **Database Locale**: Room per logging eventi
-- **Servizio Background**: ForegroundService per ascolto continuo
-- **Web UI**: Server Ktor integrato su porta 8080
-- **UI Nativa**: Jetpack Compose con Material You
+This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
 
-## Architettura
+## 🔧 Technical Stack
 
-MVVM + Clean Architecture con:
-
-- **Hilt**: Dependency Injection
-- **Room**: Database locale
-- **TensorFlow Lite**: ML inference
-- **Ktor**: Web server embedded
-- **Coroutines/Flow**: Async operations
-
-## Web UI
-
-Accedi all'interfaccia web dal browser del dispositivo:
-
-```
-http://localhost:8080
-```
-
-Oppure dalla rete locale (trova l'IP del dispositivo):
-
-```
-http://<device-ip>:8080
-```
-
-## Permessi
-
-L'app richiede:
-
-- `RECORD_AUDIO`: Per catturare audio
-- `FOREGROUND_SERVICE`: Per servizio in background
-- `POST_NOTIFICATIONS`: Per notifica persistente
-- `WAKE_LOCK`: Per continuare con schermo spento
-
-## Ottimizzazioni
-
-- GPU Delegate per inferenza accelerata su Snapdragon
-- Audio buffer circolare per streaming efficiente
-- TFLite con XNNPACK per CPU ottimizzata
-
-## Note
-
-- Il modello YAMNet richiede ~10MB
-- L'app usa ~100MB RAM in totale
-- GPU delegate automatico su dispositivi compatibili
+- **Kotlin** & **Jetpack Compose**
+- **TensorFlow Lite** (Inference)
+- **Ktor** (Local Web Server)
+- **Hilt** (Dependency Injection)
+- **Room** (Local Persistence)
